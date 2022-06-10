@@ -19,7 +19,7 @@ export default () => {
   ]);
 
   return (
-    <div>
+    <Container>
       <Container>
         <Title order={3}>My questionnaires</Title>
         <Space h="md" />
@@ -41,6 +41,6 @@ export default () => {
         </Stack>
       </Container>
       <Outlet />
-    </div>
+    </Container>
   );
 };

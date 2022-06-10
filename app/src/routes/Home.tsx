@@ -6,9 +6,7 @@ export default () => {
   return (
     <>
       <NavBar />
-      <Container
-        sx={{ paddingInline: "2rem", paddingBlock: "2rem", margin: 0 }}
-      >
+      <Container sx={{ paddingInline: "2rem", paddingBlock: "2rem" }}>
         <Outlet />
       </Container>
     </>

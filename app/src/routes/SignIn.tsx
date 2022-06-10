@@ -19,20 +19,22 @@ export default () => {
         <FormPage
           fields={[
             {
+              type: "text",
               name: "email",
               label: "Email",
-              initalValue: "",
+              initialValue: "",
               validator: (value) =>
                 !value ? "Email field must not be empty" : null,
               required: true,
             },
             {
+              type: "custom",
               name: "password",
               label: "Password",
-              initalValue: "",
+              initialValue: ["test"],
               validator: (value) =>
                 !value ? "Password field must not be empty" : null,
-              required: true,
+              component: null,
             },
           ]}
           handleSubmit={handleSubmit}

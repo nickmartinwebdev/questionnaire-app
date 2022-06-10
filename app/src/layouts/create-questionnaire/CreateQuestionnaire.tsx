@@ -1,82 +1,64 @@
-import { Center, Stack, Title, Text, Divider } from "@mantine/core";
-import { useReducer } from "react";
+import {
+  Center,
+  Stack,
+  Title,
+  Divider,
+  TextInput,
+  Textarea,
+} from "@mantine/core";
+
+import useForm from "../../components/form/useForm";
 import QuestionEdit from "./components/QuestionEdit";
-
 import QuestionTypeMenu from "./components/QuestionTypeMenu";
-import { ActionCreator, Question } from "./types";
-
-interface CreateQuestionnaireState {
-  questions: Question[];
-}
-
-type CreateQuestionnaireActions = {
-  ADD_QUESTION: Question;
-  UPDATE_QUESTION: { position: number; question: Question };
-  DELETE_QUESTION: number;
-};
-
-const removeItemAtIndex = <T,>(array: T[], index: number): T[] => {
-  const newArray = [...array];
-  newArray.splice(index);
-  return newArray;
-};
-
-const updateItemAtIndex = <T,>(array: T[], index: number, item: T): T[] => {
-  const newArray = [...array];
-  newArray.splice(index, 1, item);
-  return newArray;
-};
-
-const createQuestionnaireReducer = (
-  state: CreateQuestionnaireState,
-  action: ActionCreator<CreateQuestionnaireActions>
-): CreateQuestionnaireState => {
-  switch (action.type) {
-    case "ADD_QUESTION":
-      return { questions: [...state.questions, action.payload] };
-    case "DELETE_QUESTION":
-      return { questions: removeItemAtIndex(state.questions, action.payload) };
-    case "UPDATE_QUESTION":
-      return {
-        questions: updateItemAtIndex(
-          state.questions,
-          action.payload.position,
-          action.payload.question
-        ),
-      };
-    default:
-      return state;
-  }
-};
+import { Question } from "./types";
 
 export default () => {
-  const [state, dispatch] = useReducer(createQuestionnaireReducer, {
-    questions: [],
+  const { actions, values } = useForm({
+    initialValues: {
+      title: "",
+      description: "",
+      questions: [] as Question[],
+    },
   });
 
   return (
-    <Center>
-      <Stack>
-        <Title order={3}>New questionnaire</Title>
-        <Text> Create your questionnaire by adding questions below:</Text>
-        {state.questions.map((question, index) => (
+    <Center sx={{ maxWidth: "500px", justifySelf: "center" }}>
+      <Stack sx={{ width: "100%" }}>
+        <TextInput
+          label="Title"
+          value={values.title}
+          onChange={(event) =>
+            actions.title.update({ value: event.currentTarget.value })
+          }
+          placeholder="The title for your questionnaire"
+          required
+        />
+        <Textarea
+          label="Description"
+          value={values.description}
+          onChange={(event) =>
+            actions.description.update({ value: event.currentTarget.value })
+          }
+          minRows={6}
+          placeholder="The description for your questionnarie"
+        />
+        <Divider />
+        {values.questions.map((question, index) => (
           <Stack key={index}>
+            <Title order={5}>{`Question ${index + 1}`}</Title>
             <QuestionEdit
               question={question}
               updateQuestion={(question) =>
-                dispatch({
-                  type: "UPDATE_QUESTION",
-                  payload: { position: index, question },
-                })
+                actions.questions.updateItem({ item: question, index })
               }
             />
             <Divider />
           </Stack>
         ))}
         <QuestionTypeMenu
-          index={state.questions.length + 1}
+          index={values.questions.length + 1}
           selectQuestionType={(question) =>
-            dispatch({ type: "ADD_QUESTION", payload: question })
+            actions.questions.addItem({ item: question })
           }
         />
       </Stack>

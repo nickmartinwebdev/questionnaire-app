@@ -5,6 +5,7 @@ import {
   Group,
   Stack,
   Switch,
+  Card,
 } from "@mantine/core";
 import { TextQuestion } from "../types";
 
@@ -43,7 +44,10 @@ export default (props: Props) => {
         label="Required"
         checked={question.required}
         onChange={(event) =>
-          updateQuestion({ ...question, required: event.currentTarget.checked })
+          updateQuestion({
+            ...question,
+            required: event.currentTarget.checked,
+          })
         }
       />
     </Stack>

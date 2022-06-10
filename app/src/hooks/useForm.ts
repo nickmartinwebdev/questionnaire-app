@@ -1,27 +1,27 @@
 import { FormEvent, useCallback, useState } from "react";
 
-export type Validator = (
-  value: string,
-  values: Record<string, string>
+export type Validator<T> = (
+  value: T,
+  values: Record<string, T>
 ) => string | null;
 
-interface Props {
-  initialValue: Record<string, any>;
-  validation?: Record<string, Validator>;
+interface Props<T> {
+  initialValue: Record<string, T>;
+  validation?: Record<string, Validator<T>>;
 }
 
 type ErrorMap = Record<string, string>;
 
-type FormInputProps = Record<
+type FormInputProps<T> = Record<
   string,
   {
-    value: string;
+    value: T;
     error: string | undefined;
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (value: T) => void;
   }
 >;
 
-const useForm = (props: Props) => {
+const useForm = <T>(props: Props<T>) => {
   const { initialValue, validation = {} } = props;
 
   const [validationErrors, setValidationErrors] = useState<ErrorMap>({});
@@ -42,13 +42,13 @@ const useForm = (props: Props) => {
     return errors;
   }, [validation, setValidationErrors, state]);
 
-  const setValues = (stateToUpdate?: Record<string, string>) => {
+  const setValues = (stateToUpdate?: Record<string, T>) => {
     setState((state) => ({ ...state, ...stateToUpdate }));
   };
 
   const onSubmit = (
     event: FormEvent,
-    func: (values: Record<string, string>) => void
+    func: (values: Record<string, T>) => void
   ): boolean => {
     event.preventDefault();
     if (!Object.keys(validate()).length) {
@@ -58,14 +58,14 @@ const useForm = (props: Props) => {
     return false;
   };
 
-  const formInputProps: FormInputProps = Object.keys(
-    initialValue
-  ).reduce<FormInputProps>((props, name) => {
+  const formInputProps: FormInputProps<T> = Object.keys(initialValue).reduce<
+    FormInputProps<T>
+  >((props, name) => {
     props[name] = {
       value: state[name],
       error: validationErrors[name],
-      onChange: (event) => {
-        setValues({ [name]: event.currentTarget.value });
+      onChange: (value) => {
+        setValues({ [name]: value });
       },
     };
     return props;
