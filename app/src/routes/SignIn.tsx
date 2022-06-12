@@ -1,10 +1,24 @@
-import { Center, Container, Stack, Title } from "@mantine/core";
+import {
+  Button,
+  Center,
+  Container,
+  Stack,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { useNavigate } from "react-router";
 
-import FormPage from "../components/form/FormPage";
+import useForm from "../components/form/useForm";
 
 export default () => {
   const navigate = useNavigate();
+
+  const { actions, errors, onSubmit, values } = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   const handleSubmit = () => {
     navigate("/home/questionnaires");
@@ -15,32 +29,32 @@ export default () => {
       <Center>
         <Title order={3}>Sign in </Title>
       </Center>
-      <Stack>
-        <FormPage
-          fields={[
-            {
-              type: "text",
-              name: "email",
-              label: "Email",
-              initialValue: "",
-              validator: (value) =>
-                !value ? "Email field must not be empty" : null,
-              required: true,
-            },
-            {
-              type: "custom",
-              name: "password",
-              label: "Password",
-              initialValue: ["test"],
-              validator: (value) =>
-                !value ? "Password field must not be empty" : null,
-              component: null,
-            },
-          ]}
-          handleSubmit={handleSubmit}
-          submitText="Sign in"
-        />
-      </Stack>
+      <form
+        noValidate
+        style={{ flex: 1 }}
+        onSubmit={(event) => onSubmit(event, handleSubmit)}
+      >
+        <Stack>
+          <TextInput
+            label="Email"
+            value={values.email}
+            error={errors.email.error}
+            onChange={(event) =>
+              actions.email.update({ value: event.currentTarget.value })
+            }
+          />
+          <TextInput
+            label="Password"
+            value={values.password}
+            error={errors.password.error}
+            onChange={(event) =>
+              actions.password.update({ value: event.currentTarget.value })
+            }
+            type="password"
+          />
+          <Button type="submit">Sign in</Button>
+        </Stack>
+      </form>
     </Container>
   );
 };

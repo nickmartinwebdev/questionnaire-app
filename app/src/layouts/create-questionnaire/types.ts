@@ -16,6 +16,7 @@ export interface LargeTextQuestion {
   label: string;
   required: boolean;
   placeholder: string;
+  defaultValue: string | null;
   validator?: QuestionValidator;
 }
 
@@ -28,7 +29,14 @@ export interface SelectQuestion {
   validator?: QuestionValidator;
 }
 
-export type Question = TextQuestion | LargeTextQuestion | SelectQuestion;
+export type Question = {
+  type: "text_large" | "text" | "select";
+  label: string;
+  required: boolean;
+  placeholder: string;
+  defaultValue?: string | null;
+  validator?: QuestionValidator;
+};
 
 export type ActionCreator<Actions extends Record<string, any>> = {
   [Key in keyof Actions]: Actions[Key] extends null

@@ -1,24 +1,18 @@
-import {
-  Container,
-  TextInput,
-  Text,
-  Group,
-  Stack,
-  Switch,
-  Card,
-} from "@mantine/core";
+import { TextInput, Text, Stack, Switch } from "@mantine/core";
+import { ObjectError } from "../../../components/form/useForm";
 import { TextQuestion } from "../types";
 
 interface Props {
   question: TextQuestion;
   updateQuestion: (question: TextQuestion) => void;
+  errors: ObjectError<TextQuestion>;
 }
 
 export default (props: Props) => {
-  const { question, updateQuestion } = props;
+  const { question, updateQuestion, errors } = props;
 
   return (
-    <Stack justify="left">
+    <Stack>
       <TextInput
         label="Label"
         value={question.label}
@@ -28,10 +22,11 @@ export default (props: Props) => {
             label: event.currentTarget.value,
           })
         }
+        error={errors.label.error}
       />
       <Text>Type: Text</Text>
       <TextInput
-        label="Placeholder"
+        label="Placeholder text"
         value={question.placeholder}
         onChange={(event) =>
           updateQuestion({
@@ -39,6 +34,7 @@ export default (props: Props) => {
             placeholder: event.currentTarget.value,
           })
         }
+        error={errors.placeholder.error}
       />
       <Switch
         label="Required"
